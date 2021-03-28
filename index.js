@@ -17,8 +17,8 @@ app.get('/auth', (req, res) => {
 app.get('/css.css', (req, res) => {
   res.sendFile("/home/runner/isOn/css/tailwind.css")
 });
-app.get('/send', (req, res) => {
-  res.redirect(`https://fluffyscratch.retronbv.repl.co/auth/getKeys/v1/${req.query.name}?redirect=aXNvbmF1dGgud2d5dC50ay9sb2dpbg==`)
+app.get('/auth/send', (req, res) => {
+  res.redirect(`https://fluffyscratch.retronbv.repl.co/auth/getKeys/v1/${req.query.name}?redirect=aXNvbi53Z3l0LnRrL2F1dGgvY2FsbGJhY2s`)
 });
 app.get("/login", (req, res)=>  {
   var response;
