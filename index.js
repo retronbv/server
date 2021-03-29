@@ -4,28 +4,46 @@ app.use(express.json());
 // cors
 const cors = require("cors");
 app.use(cors());
+// env fix
+require('dotenv').config()
 // database
-const jsoning = require('jsoning');
-var database = new jsoning("database.json");
+const monk = require('monk');
+const mongoURL = process.env['dburl'];
+const db = monk(mongoURL);
+const statusdb = db.get('status')
+const idsdb = db.get('ids')
+db.then(() => {
+  console.log('Connected correctly to server')
+})
+statusdb.createIndex("name", { unique: true });
+idsdb.createIndex("name", { unique: true });
+// auth
+const fetch = require("node-fetch")
+const retronid = require("retronid"); // needed for any successful node js project
 // home page
 app.get('/', (req, res) => {
   res.sendFile("/home/runner/isOn/pages/index.html")
 });
-app.get('/auth', (req, res) => {
-  res.sendFile("/home/runner/isOn/pages/welcomeauth.html")
-});
+// css
 app.get('/css.css', (req, res) => {
   res.sendFile("/home/runner/isOn/css/tailwind.css")
 });
-app.get('/auth/send', (req, res) => {
-  res.redirect(`https://fluffyscratch.retronbv.repl.co/auth/getKeys/v1/${req.query.name}?redirect=aXNvbi53Z3l0LnRrL2F1dGgvY2FsbGJhY2s`)
+// auth pages
+app.get('/auth', (req, res) => {
+  res.sendFile("/home/runner/isOn/pages/welcomeauth.html")
 });
-app.get("/login", (req, res)=>  {
+app.get('/auth/send', (req, res) => {
+  res.redirect(`https://isonauth.wgyt.tk/auth/getKeys/v1/${req.query.name}?redirect=aXNvbi53Z3l0LnRrL2F1dGgvY2FsbGJhY2s`)
+});
+app.get("/auth/callback", (req, res)=>  {
   var response;
-  h = fetch(`https://fluffyscratch.hampton.pw/auth/verify/v1/${req.query.username}/${req.query.publicCode}/${req.query.privateCode}/${req.query.redirectLocation}`).then(res => res.text()).then(text => {
+  h = fetch(`https://isonauth.wgyt.tk/auth/verify/v1/${req.query.username}/${req.query.publicCode}/${req.query.privateCode}/${req.query.redirectLocation}`).then(res => res.text()).then(text => {
 		console.log(text)
-    if (text===true){
-			res.send(req.query.username)
+    if (text==='true'){
+			retroid = retronid.generate
+			res.json({"user":req.query.username,"retronid":retroid})
+			// todo push user status of online
+			// todo push the retron id
 		}else{
 			res.redirect('/auth')
 		}
@@ -33,12 +51,12 @@ app.get("/login", (req, res)=>  {
 });
 // api
 app.get('/api/status/:user', (req, res) => {
-  database.get(req.params.user);
+  // todo read data
 });
 app.post('/api/status/:user', (req, res) => {
 	auth = false
 	if(auth){
-		database.set(req.params.user, req.body.data);
+  // todo write data
 	}
 });
 
